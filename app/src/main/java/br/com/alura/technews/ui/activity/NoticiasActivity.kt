@@ -11,6 +11,8 @@ import br.com.alura.technews.ui.activity.extensions.transacaoFragment
 import br.com.alura.technews.ui.fragment.ListaNoticiasFragment
 import br.com.alura.technews.ui.fragment.VisualizaNoticiaFragment
 
+private const val TAG_FRAGMENT_VISUALIZA_NOTICIA = "visualizaNoticia"
+
 class NoticiasActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,6 +20,28 @@ class NoticiasActivity : AppCompatActivity() {
         setContentView(R.layout.activity_noticias)
         if (savedInstanceState == null) {
             abreListaNoticias()
+        } else {
+            supportFragmentManager
+                .findFragmentByTag(TAG_FRAGMENT_VISUALIZA_NOTICIA)
+                ?.let { fragment ->
+                    val arguments = fragment.arguments
+                    val visualizaNoticiaFragment = VisualizaNoticiaFragment()
+                    visualizaNoticiaFragment.arguments = arguments
+                    transacaoFragment {
+                        remove(fragment)
+                    }
+                    supportFragmentManager.popBackStack()
+                    transacaoFragment {
+                        val container =
+                            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                                R.id.activity_noticias_conteiner_secundario
+                            } else {
+                                addToBackStack(null)
+                                R.id.activity_noticias_conteiner_primario
+                            }
+                        replace(container, visualizaNoticiaFragment, TAG_FRAGMENT_VISUALIZA_NOTICIA)
+                    }
+                }
         }
     }
 
@@ -60,14 +84,14 @@ class NoticiasActivity : AppCompatActivity() {
         bundle.putLong(NOTICIA_ID_CHAVE, noticia.id)
         fragment.arguments = bundle
         transacaoFragment {
-            val conteiner =
+            val container =
                 if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     R.id.activity_noticias_conteiner_secundario
                 } else {
                     addToBackStack(null)
                     R.id.activity_noticias_conteiner_primario
                 }
-            replace(conteiner, fragment)
+            replace(container, fragment, TAG_FRAGMENT_VISUALIZA_NOTICIA)
         }
     }
 
