@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import br.com.alura.technews.R
 import br.com.alura.technews.model.Noticia
+import br.com.alura.technews.ui.activity.extensions.transacaoFragment
 import br.com.alura.technews.ui.fragment.ListaNoticiasFragment
 import br.com.alura.technews.ui.fragment.VisualizaNoticiaFragment
 
@@ -17,26 +18,31 @@ class NoticiasActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_noticias)
         title = TITULO_APPBAR
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.add(R.id.activity_noticias_conteiner, ListaNoticiasFragment())
-        transaction.commit()
+        transacaoFragment {
+            add(R.id.activity_noticias_conteiner, ListaNoticiasFragment())
+        }
     }
 
     override fun onAttachFragment(fragment: Fragment?) {
         super.onAttachFragment(fragment)
-        if (fragment is ListaNoticiasFragment) {
-            fragment.quandoNoticiaSelecionada = { noticia ->
-                abreVisualizadorNoticia(noticia)
+        when (fragment) {
+            is ListaNoticiasFragment -> {
+                configuraListaNoticias(fragment)
             }
-            fragment.quandoFabSalvaNoticiasClicado = {
-                abreFormularioModoCriacao()
+            is VisualizaNoticiaFragment -> {
+                configuraVisualizaNoticias(fragment)
             }
         }
-        if (fragment is VisualizaNoticiaFragment) {
-            fragment.quandoFinish = { finish() }
-            fragment.quandoAbreFormularioEdicao = { noticia -> abreFormularioEdicao(noticia) }
-        }
+    }
 
+    private fun configuraVisualizaNoticias(fragment: VisualizaNoticiaFragment) {
+        fragment.quandoFinish = this::finish
+        fragment.quandoAbreFormularioEdicao = this::abreFormularioEdicao
+    }
+
+    private fun configuraListaNoticias(fragment: ListaNoticiasFragment) {
+        fragment.quandoNoticiaSelecionada = this::abreVisualizadorNoticia
+        fragment.quandoFabSalvaNoticiasClicado = this::abreFormularioModoCriacao
     }
 
     private fun abreFormularioModoCriacao() {
@@ -45,13 +51,13 @@ class NoticiasActivity : AppCompatActivity() {
     }
 
     private fun abreVisualizadorNoticia(noticia: Noticia) {
-        val transaction = supportFragmentManager.beginTransaction()
         val fragment = VisualizaNoticiaFragment()
         val bundle = Bundle()
         bundle.putLong(NOTICIA_ID_CHAVE, noticia.id)
         fragment.arguments = bundle
-        transaction.replace(R.id.activity_noticias_conteiner, fragment)
-        transaction.commit()
+        transacaoFragment {
+            replace(R.id.activity_noticias_conteiner, fragment)
+        }
     }
 
     private fun abreFormularioEdicao(noticia: Noticia) {
