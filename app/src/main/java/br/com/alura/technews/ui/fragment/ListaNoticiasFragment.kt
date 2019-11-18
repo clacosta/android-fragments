@@ -9,6 +9,8 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import br.com.alura.technews.R
+import br.com.alura.technews.model.Noticia
+import br.com.alura.technews.ui.activity.ListaNoticiasActivity
 import br.com.alura.technews.ui.fragment.extensions.mostraErro
 import br.com.alura.technews.ui.recyclerview.adapter.ListaNoticiasAdapter
 import br.com.alura.technews.ui.viewmodel.ListaNoticiasViewModel
@@ -25,6 +27,8 @@ class ListaNoticiasFragment : Fragment() {
         } ?: throw IllegalArgumentException("Contexto inválido")
     }
     private val viewModel: ListaNoticiasViewModel by viewModel()
+    var quandoFabSalvaNoticiasClicado: () -> Unit = {}
+    var quandoNoticiaSelecionada: (noticia: Noticia) -> Unit = {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +55,7 @@ class ListaNoticiasFragment : Fragment() {
 
     private fun configuraFabAdicionaNoticia() {
         lista_noticias_fab_salva_noticia.setOnClickListener {
-            //            abreFormularioModoCriacao()
+            quandoFabSalvaNoticiasClicado()
         }
     }
 
@@ -63,7 +67,7 @@ class ListaNoticiasFragment : Fragment() {
     }
 
     private fun configuraAdapter() {
-//        adapter.quandoItemClicado = this::abreVisualizadorNoticia
+        adapter.quandoItemClicado = quandoNoticiaSelecionada
     }
 
     private fun buscaNoticias() {
