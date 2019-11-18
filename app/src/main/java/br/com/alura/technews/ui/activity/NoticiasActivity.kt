@@ -22,7 +22,7 @@ class NoticiasActivity : AppCompatActivity() {
 
     private fun abreListaNoticias() {
         transacaoFragment {
-            add(R.id.activity_noticias_conteiner, ListaNoticiasFragment())
+            add(R.id.activity_noticias_conteiner_primario, ListaNoticiasFragment())
         }
     }
 
@@ -60,7 +60,7 @@ class NoticiasActivity : AppCompatActivity() {
         fragment.arguments = bundle
         transacaoFragment {
             addToBackStack(null)
-            replace(R.id.activity_noticias_conteiner, fragment)
+            replace(R.id.activity_noticias_conteiner_secundario, fragment)
         }
     }
 
