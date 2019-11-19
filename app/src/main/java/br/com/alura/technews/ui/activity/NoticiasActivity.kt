@@ -10,6 +10,7 @@ import br.com.alura.technews.model.Noticia
 import br.com.alura.technews.ui.activity.extensions.transacaoFragment
 import br.com.alura.technews.ui.fragment.ListaNoticiasFragment
 import br.com.alura.technews.ui.fragment.VisualizaNoticiaFragment
+import kotlinx.android.synthetic.main.activity_noticias.*
 
 private const val TAG_FRAGMENT_VISUALIZA_NOTICIA = "visualizaNoticia"
 
@@ -33,7 +34,7 @@ class NoticiasActivity : AppCompatActivity() {
                     supportFragmentManager.popBackStack()
                     transacaoFragment {
                         val container =
-                            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                            if (activity_noticias_conteiner_secundario != null) {
                                 R.id.activity_noticias_conteiner_secundario
                             } else {
                                 addToBackStack(null)
@@ -85,7 +86,7 @@ class NoticiasActivity : AppCompatActivity() {
         fragment.arguments = bundle
         transacaoFragment {
             val container =
-                if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                if (activity_noticias_conteiner_secundario != null) {
                     R.id.activity_noticias_conteiner_secundario
                 } else {
                     addToBackStack(null)
